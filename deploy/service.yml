@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cmv-service
+  labels:
+    run: cmv
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 5006
+  selector:
+    app: cmv

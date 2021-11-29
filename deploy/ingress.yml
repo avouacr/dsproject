@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1 
+kind: Ingress
+metadata:
+  name: cmv-ingress
+spec:
+  tls:
+  - hosts:
+    - cmv.kub.sspcloud.fr
+  rules:
+    - host: cmv.kub.sspcloud.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cmv-service
+                port:
+                  number: 80

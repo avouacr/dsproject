@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cmv-deployment
+  labels: 
+    app: cmv
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cmv
+  template:
+    metadata:
+      labels:
+        app: cmv
+    spec:
+      containers:
+      - name: cmv
+        image: avouacr/socsemics-viz-app
+        env:
+        - name: BOKEH_ALLOW_WS_ORIGIN
+          value: cmv.kub.sspcloud.fr
+        ports:
+        - containerPort: 5006
