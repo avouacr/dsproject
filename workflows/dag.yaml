@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: dag-dsproject
+spec:
+  schedule: "0 3 * * 0"
+  concurrencyPolicy: "Replace"
+  startingDeadlineSeconds: 0
+  workflowSpec:
+    serviceAccountName: workflow
+    entrypoint: dsproject
+    templates:
+    - name: dsproject
+      dag:
+        tasks:
+        - name: get-new-data
+          template: echo
+          arguments:
+            parameters: [{name: message, value: A}]
+        - name: data-cleaning
+          dependencies: [get-new-data]
+          template: echo
+          arguments:
+            parameters: [{name: message, value: B}]
+        - name: inference
+          dependencies: [data-cleaning]
+          template: echo
+          arguments:
+            parameters: [{name: message, value: C}]
+        - name: test1
+          dependencies: [inference]
+          template: echo
+          arguments:
+            parameters: [{name: message, value: D}]
+        - name: test2
+          dependencies: [inference]
+          template: echo
+          arguments:
+            parameters: [{name: message, value: E}]
+        - name: update-database
+          dependencies: [test1, test2]
+          template: echo
+          arguments:
+            parameters: [{name: message, value: F}]
+
+    - name: echo
+      inputs:
+        parameters:
+        - name: message
+      container:
+        image: alpine:3.7
+        command: [echo, "{{inputs.parameters.message}}"]
