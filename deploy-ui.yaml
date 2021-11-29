@@ -1,0 +1,16 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dsproject-app
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/avouacr/dsproject.git
+    targetRevision: HEAD
+    path: deploy
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: user-avouacr
+  syncPolicy:
+    automated:
+      selfHeal: true
